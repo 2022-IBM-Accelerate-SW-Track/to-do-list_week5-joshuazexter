@@ -26,6 +26,28 @@ class Home extends Component {
     });
   };
 
+//load the todo list from the database and update the state with the new list
+  componentDidMount() {
+    Axios.get("http://localhost:8080/get/items").then((res) => {
+
+      let todoList = JSON.stringify(res.data);
+      todoList = JSON.parse(todoList);
+      //console.log(todoList);
+      //iterate over todoList and append the todo objects to the state
+      // {content : todo.Task, date : todo.Current_date, due : todo.Due_date}];
+      todoList.forEach((todo) => {
+        
+        todo = {content : todo.Task, date : todo.Current_date, due : todo.Due_date, id : todo.id};
+        console.log(todo);
+        this.setState({
+          todos: [...this.state.todos, todo],
+        });
+      });
+    });
+  }
+
+
+
   // the addTodo function simply creates a new array that includes the user submitted todo item and then
   // updates the state with the new list.
   addTodo = (todo) => {
@@ -68,6 +90,8 @@ class Home extends Component {
     return (
       <div className="Home">
         <h1>Todo's </h1>
+        {/* call the componentDidMount */}
+
         {/* When passing the AddTodo component, addTodo is a prop that is used in the 
         AddTodo.js file when handling the submit */}
         <AddTodo addTodo={this.addTodo} />
